@@ -1,11 +1,11 @@
-import { FormPanel } from '@/features/form';
+import { PromptsPanel } from '@/features/prompts';
 import { PreviewPanel } from '@/features/output';
 
-export default function DashboardPage() {
+export default function PromptsPage() {
   return (
     <div className="flex h-[calc(100vh-theme(spacing.12))] overflow-hidden bg-zinc-50">
       <div className="w-1/2 overflow-y-auto border-r border-zinc-200 bg-white">
-        <FormPanel />
+        <PromptsPanel />
       </div>
       <div className="w-1/2 overflow-y-auto bg-zinc-50">
         <PreviewPanel />

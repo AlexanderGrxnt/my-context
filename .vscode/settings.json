@@ -1,0 +1,17 @@
+{
+  "github.copilot.chat.codeGeneration.instructions": [
+    { "file": ".github/instructions/typescript.instructions.md" },
+    { "file": ".github/instructions/components.instructions.md" }
+  ],
+  "github.copilot.chat.testGeneration.instructions": [
+    { "text": "Use Jest and React Testing Library. Co-locate test files as *.test.ts or *.test.tsx next to the file under test." }
+  ],
+  "github.copilot.chat.reviewSelection.instructions": [
+    { "file": ".github/instructions/typescript.instructions.md" },
+    { "text": "Flag any use of `any`, non-null assertions, inline styles, or atoms defined outside src/lib/atoms.ts." }
+  ],
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    { "text": "Use conventional commits format: type(scope): description. Types: feat, fix, chore, refactor, docs, style, test." }
+  ],
+  "github.copilot.chat.agent.runTasks": true
+}
