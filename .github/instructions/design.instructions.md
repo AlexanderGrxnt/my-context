@@ -11,7 +11,7 @@ applyTo: "**"
 - All pages share the same two-column layout: **form panel** (left) and **live output preview** (right)
 - A shared `<Nav>` component links between all three pages
 - Output updates reactively as the user types — no submit button required
-- Users can copy any individual output file to the clipboard, or download all files
+- Users can copy any individual output file to the clipboard, or download all files as a `.zip` archive preserving the correct subfolder structure
 - Company preferences persist across sessions via `atomWithStorage` (localStorage)
 - Project settings are session-only (standard Jotai atoms, reset on refresh)
 
@@ -209,6 +209,6 @@ export const outputAtom = atom((get) => ({
 - `generateVsCodeTasks(state: VsCodeTasksState)` in `src/lib/generateContext.ts` renders the `.vscode/tasks.json` file
 - `<PreviewPanel>` is shared between all three pages — it reads `outputAtom` which combines both groups
 - `<OutputFilePreview>` renders content in a `<pre>` block; no third-party syntax highlighting library unless explicitly added
-- Download uses an `<a download>` link fallback — no zip library unless explicitly added
+- Download produces a `.zip` archive containing all generated files in their correct folder structure (e.g. `.github/instructions/`, `.vscode/`) — use the `fflate` library (`npm install fflate`) for zip generation; `<DownloadAllButton>` triggers this via a client-side Blob + `<a download>` link
 - All form inputs are controlled via Jotai atoms — no local `useState` for form values
 - `<Nav>` lives in `src/components/Nav.tsx` as it is shared across all pages

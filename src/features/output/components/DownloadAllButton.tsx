@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 
+import { zipSync, strToU8 } from 'fflate';
 import type { GeneratedFile } from '@/lib/generateContext';
 
 interface DownloadAllButtonProps {
@@ -8,23 +9,27 @@ interface DownloadAllButtonProps {
 }
 
 /**
- * Downloads all generated files individually using an `<a download>` link.
- * Uses the File System Access API when available, with a fallback for other browsers.
+ * Downloads all generated files as a single `.zip` archive that preserves
+ * the correct subfolder structure (e.g. `.github/instructions/`, `.vscode/`).
+ * Uses `fflate` for client-side zip generation.
  */
 const DownloadAllButton = ({ files }: DownloadAllButtonProps): React.JSX.Element => {
   const handleDownload = (): void => {
     if (files.length === 0) return;
 
-    files.forEach((file) => {
-      const blob = new Blob([file.content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const fileName = file.path.split('/').pop() ?? file.path;
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    const entries = Object.fromEntries(
+      files.map((file) => [file.path, strToU8(file.content)])
+    );
+
+    const zipped = zipSync(entries);
+    // fflate types the buffer as ArrayBufferLike but always returns a plain ArrayBuffer
+    const blob = new Blob([zipped.buffer as ArrayBuffer], { type: 'application/zip' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'copilot-context.zip';
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
