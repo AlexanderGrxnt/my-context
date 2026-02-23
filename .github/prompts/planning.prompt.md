@@ -31,3 +31,13 @@ When done, report:
 - Which files were changed
 - A brief summary of what was updated and why
 - Any rules that were intentionally left unchanged because they remain accurate
+
+## Branch Guidance
+
+If the planning session describes a **new feature** (not just a convention tweak), remind the user to create a feature branch before any implementation begins:
+
+```bash
+git checkout -b feat/<short-description>
+```
+
+Do not create the branch yourself — only prompt the user to do so. Implementation work should never happen directly on `main`.

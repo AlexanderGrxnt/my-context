@@ -13,6 +13,7 @@
     "ls": "Get-ChildItem src -Recurse -Filter *.tsx,*.ts | Select-Object FullName"
   },
   "dependencies": {
+    "fflate": "^0.8.2",
     "jotai": "^2.18.0",
     "next": "16.1.6",
     "react": "19.2.3",
