@@ -92,11 +92,40 @@ describe('generateCopilotInstructions', () => {
     expect(result).toContain('# GitHub Copilot Instructions - my-app');
   });
 
-  it('omits the project name from the heading when name is empty', () => {
+  it('uses TBD at init for the project name when name is empty', () => {
     const state = { ...baseState, projectInfo: { name: '', description: '', overview: '', workingWithCodebase: '', bootstrapSteps: '' } };
     const result = generateCopilotInstructions(state);
-    expect(result).toContain('# GitHub Copilot Instructions\n');
-    expect(result).not.toContain(' - ');
+    expect(result).toContain('# GitHub Copilot Instructions - TBD at init');
+  });
+
+  it('always includes the Project Overview section — uses TBD at init when both fields are empty', () => {
+    const state = {
+      ...baseState,
+      projectInfo: { name: 'x', description: '', overview: '', workingWithCodebase: '', bootstrapSteps: '' },
+    };
+    const result = generateCopilotInstructions(state);
+    expect(result).toContain('## Project Overview');
+    expect(result).toContain('TBD at init');
+  });
+
+  it('always includes the Bootstrap Sequence section — uses TBD at init when bootstrapSteps is empty', () => {
+    const state = {
+      ...baseState,
+      projectInfo: { ...baseState.projectInfo, bootstrapSteps: '' },
+    };
+    const result = generateCopilotInstructions(state);
+    expect(result).toContain('## Bootstrap Sequence');
+    expect(result).toContain('TBD at init');
+  });
+
+  it('uses the provided bootstrap steps when set', () => {
+    const state = {
+      ...baseState,
+      projectInfo: { ...baseState.projectInfo, bootstrapSteps: 'npm install\nnpm run dev' },
+    };
+    const result = generateCopilotInstructions(state);
+    expect(result).toContain('npm install');
+    expect(result).not.toContain('TBD at init');
   });
 
   it('uses overview when both overview and description are provided', () => {
@@ -118,13 +147,14 @@ describe('generateCopilotInstructions', () => {
     expect(result).toContain('short desc');
   });
 
-  it('omits the Project Overview section when both overview and description are empty', () => {
+  it('uses TBD at init for overview when both overview and description are empty', () => {
     const state = {
       ...baseState,
       projectInfo: { name: 'x', description: '', overview: '', workingWithCodebase: '', bootstrapSteps: '' },
     };
     const result = generateCopilotInstructions(state);
-    expect(result).not.toContain('## Project Overview');
+    expect(result).toContain('## Project Overview');
+    expect(result).toContain('TBD at init');
   });
 
   it('renders tech stack entries as a bullet list', () => {
@@ -293,6 +323,60 @@ describe('generateScopedInstructionFile', () => {
   it('does not end with trailing whitespace', () => {
     const result = generateScopedInstructionFile(makeFile('components', '**/*.tsx'), baseState);
     expect(result).toBe(result.trimEnd());
+  });
+
+  describe('design id', () => {
+    const designFile = makeFile('design', '**');
+    const emptyArchitecture = { routes: [], domainTypes: [], componentHierarchy: '' };
+
+    it('always includes Route Map with TBD at init when no routes are defined', () => {
+      const state = { ...baseState, architecture: emptyArchitecture };
+      const result = generateScopedInstructionFile(designFile, state);
+      expect(result).toContain('## Route Map');
+      expect(result).toContain('TBD at init');
+    });
+
+    it('always includes Domain Types with TBD at init when no types are defined', () => {
+      const state = { ...baseState, architecture: emptyArchitecture };
+      const result = generateScopedInstructionFile(designFile, state);
+      expect(result).toContain('## Domain Types');
+      expect(result).toContain('TBD at init');
+    });
+
+    it('always includes Component Hierarchy with TBD at init when blank', () => {
+      const state = { ...baseState, architecture: emptyArchitecture };
+      const result = generateScopedInstructionFile(designFile, state);
+      expect(result).toContain('## Component Hierarchy');
+      expect(result).toContain('TBD at init');
+    });
+
+    it('renders defined routes in a table and no TBD at init when all fields are populated', () => {
+      const state = {
+        ...baseState,
+        architecture: {
+          routes: [{ path: '/recipes', description: 'Browse recipes' }],
+          domainTypes: [{ name: 'Recipe', description: 'A recipe entry' }],
+          componentHierarchy: '<App />',
+        },
+      };
+      const result = generateScopedInstructionFile(designFile, state);
+      expect(result).toContain('| `/recipes` | Browse recipes |');
+      expect(result).not.toContain('TBD at init');
+    });
+
+    it('renders defined component hierarchy', () => {
+      const state = {
+        ...baseState,
+        architecture: {
+          routes: [{ path: '/', description: 'Home' }],
+          domainTypes: [{ name: 'Recipe', description: 'A recipe entry' }],
+          componentHierarchy: '<App>\n  <Header />\n</App>',
+        },
+      };
+      const result = generateScopedInstructionFile(designFile, state);
+      expect(result).toContain('<App>');
+      expect(result).not.toContain('TBD at init');
+    });
   });
 });
 

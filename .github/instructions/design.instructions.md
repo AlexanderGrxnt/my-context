@@ -99,7 +99,7 @@ export interface VsCodeTasksState {
 }
 ```
 
-Defaults for `promptFilesAtom` should be derived from the three existing prompt files in `.github/prompts/`: `implement-and-test`, `review`, and `planning`.
+Defaults for `promptFilesAtom` should be derived from the four default prompt files: `implement-and-test`, `review`, `planning`, and `init`.
 
 Defaults for `vsCodeTasksAtom` should be derived from the existing `.vscode/tasks.json`: `build`, `typecheck`, `test`, and `lint` tasks.
 
@@ -212,3 +212,5 @@ export const outputAtom = atom((get) => ({
 - Download produces a `.zip` archive containing all generated files in their correct folder structure (e.g. `.github/instructions/`, `.vscode/`) — use the `fflate` library (`npm install fflate`) for zip generation; `<DownloadAllButton>` triggers this via a client-side Blob + `<a download>` link
 - All form inputs are controlled via Jotai atoms — no local `useState` for form values
 - `<Nav>` lives in `src/components/Nav.tsx` as it is shared across all pages
+- **"TBD at init" convention**: when a project-specific text field (project name, description, overview, architecture details, bootstrap steps) is left blank, `generateContext.ts` emits the literal string `TBD at init` in the generated output instead of omitting the section. Company preference fields (TypeScript, React components, state management, folder structure) always emit their configured or default values and are never replaced with `TBD at init`.
+- The `/init` prompt (`.github/prompts/init.prompt.md`) is intended to be run in the **target project** after the generated files have been downloaded and copied there. It scans `.github/` instruction files and `copilot-instructions.md` for `TBD at init` markers, infers values from the project overview and any already-populated fields, asks the user targeted questions about the architecture and bootstrap sequence, then edits each file to replace every placeholder.

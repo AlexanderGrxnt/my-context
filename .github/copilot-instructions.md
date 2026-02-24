@@ -22,7 +22,8 @@ Both pages contribute to the output. The app produces a ready-to-use suite of fi
   code review, and commit message generation
 - `.vscode/tasks.json` — VS Code task definitions (build, typecheck, test, lint, etc.)
 - `.github/prompts/*.prompt.md` — reusable agent prompts for implementing features
-  (`/implement-and-test`), reviewing code (`/review`), and planning convention changes (`/planning`)
+  (`/implement-and-test`), reviewing code (`/review`), planning convention changes (`/planning`),
+  and initialising a new project (`/init`)
 
 ## Tech Stack
 
@@ -60,3 +61,13 @@ Additional rules are applied automatically based on file context:
 | `.github/instructions/typescript.instructions.md` | TypeScript strictness, JSDoc, immutability |
 - When writing Tailwind, prefer readable class groupings (layout, spacing, colour, interactive)
 - Always handle edge cases (empty arrays, undefined values) gracefully
+
+## Session Logging
+
+At the start of each agent conversation, append a new line to `PROMPT_LOG.md` in the workspace root. Use the format:
+
+```
+YYYY-MM-DD HH:MM — <one-line summary of the user's first request>
+```
+
+Create the file if it does not exist. Do this before any other work.

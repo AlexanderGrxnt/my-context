@@ -5,6 +5,16 @@ description: Implement a feature then iterate until tests and lint are green
 
 Implement the requested feature following all project conventions, then complete the verification loop below. Do not consider the task done until every step passes.
 
+## Session Log
+
+Before doing anything else, append a new line to `PROMPT_LOG.md` in the workspace root. Use the format:
+
+```
+YYYY-MM-DD HH:MM — [IMPLEMENT] <one-line summary of the feature being implemented>
+```
+
+Create the file if it does not exist.
+
 ## Implementation Checklist
 - Follow the component hierarchy defined in `.github/instructions/design.instructions.md`
 - Place atoms in `src/lib/atoms.ts` — never inline

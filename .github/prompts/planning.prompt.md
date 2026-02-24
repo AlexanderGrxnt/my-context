@@ -5,6 +5,16 @@ description: Update instruction files to reflect agreed conventions — no sourc
 
 Analyse the described convention change and update the relevant instruction files in `.github/instructions/`. Do not modify any source code, tests, or configuration files.
 
+## Session Log
+
+Before doing anything else, append a new line to `PROMPT_LOG.md` in the workspace root. Use the format:
+
+```
+YYYY-MM-DD HH:MM — [PLANNING] <one-line summary of the planning request>
+```
+
+Create the file if it does not exist.
+
 ## Scope
 
 Only the following files may be created or modified:
@@ -40,4 +50,4 @@ If the planning session describes a **new feature** (not just a convention tweak
 git checkout -b feat/<short-description>
 ```
 
-Do not create the branch yourself — only prompt the user to do so. Implementation work should never happen directly on `main`.
+Implementation work should never happen directly on `main`.
