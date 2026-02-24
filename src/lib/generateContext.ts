@@ -82,18 +82,17 @@ export const generateCopilotInstructions = (state: OutputState): string => {
         ].join('\n')
       : '';
 
+  const projectName = projectInfo.name.trim() || 'TBD at init';
+
   const sections: string[] = [
-    `# GitHub Copilot Instructions${projectInfo.name ? ` - ${projectInfo.name}` : ''}`,
+    `# GitHub Copilot Instructions - ${projectName}`,
     '',
   ];
 
-  if (projectInfo.overview.trim() || projectInfo.description.trim()) {
+  {
     sections.push('## Project Overview', '');
-    if (projectInfo.overview.trim()) {
-      sections.push(projectInfo.overview.trim(), '');
-    } else {
-      sections.push(projectInfo.description.trim(), '');
-    }
+    const overviewText = projectInfo.overview.trim() || projectInfo.description.trim() || 'TBD at init';
+    sections.push(overviewText, '');
   }
 
   if (techStackLines) {
@@ -149,8 +148,9 @@ export const generateCopilotInstructions = (state: OutputState): string => {
     sections.push('## Environment Variables', '', ...varLines, '');
   }
 
-  if (projectInfo.bootstrapSteps.trim()) {
-    sections.push('## Bootstrap Sequence', '', projectInfo.bootstrapSteps.trim(), '');
+  {
+    const bootstrapText = projectInfo.bootstrapSteps.trim() || 'TBD at init';
+    sections.push('## Bootstrap Sequence', '', bootstrapText, '');
   }
 
   if (projectInfo.workingWithCodebase.trim()) {
@@ -186,6 +186,8 @@ const generateDesignContent = (architecture: ArchitectureState): string => {
       '|---|---|',
       ...activeRoutes.map((r) => `| \`${r.path.trim()}\` | ${r.description.trim()} |`)
     );
+  } else {
+    sections.push('## Route Map', '', 'TBD at init');
   }
 
   const activeDomainTypes = architecture.domainTypes.filter((t) => t.name.trim());
@@ -197,18 +199,19 @@ const generateDesignContent = (architecture: ArchitectureState): string => {
         sections.push(t.description.trim(), '');
       }
     });
+  } else {
+    sections.push('', '## Domain Types', '', 'TBD at init');
   }
 
-  if (architecture.componentHierarchy.trim()) {
-    sections.push(
-      '',
-      '## Component Hierarchy',
-      '',
-      '```',
-      architecture.componentHierarchy.trim(),
-      '```'
-    );
-  }
+  const hierarchyText = architecture.componentHierarchy.trim() || 'TBD at init';
+  sections.push(
+    '',
+    '## Component Hierarchy',
+    '',
+    '```',
+    hierarchyText,
+    '```'
+  );
 
   return sections.join('\n').trimEnd();
 };
