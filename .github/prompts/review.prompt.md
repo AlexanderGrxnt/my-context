@@ -5,6 +5,16 @@ description: Review selected code against project conventions
 
 Review the selected code against the my-context project conventions and report each violation with file, line, and a suggested fix.
 
+## Session Log
+
+Before doing anything else, append a new line to `PROMPT_LOG.md` in the workspace root. Use the format:
+
+```
+YYYY-MM-DD HH:MM — [REVIEW] <one-line summary of what is being reviewed>
+```
+
+Create the file if it does not exist.
+
 ## TypeScript
 - [ ] No use of `any` or `unknown` without explicit narrowing
 - [ ] No non-null assertions (`!`) — use optional chaining or guards instead
