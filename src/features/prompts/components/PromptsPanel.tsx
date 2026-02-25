@@ -4,6 +4,7 @@ import React from 'react';
 import { FormSection } from '@/features/form';
 import { PromptFilesForm } from './sections/PromptFilesForm';
 import { VsCodeTasksForm } from './sections/VsCodeTasksForm';
+import { HELP_CONTENT } from '@/features/tutorial/helpContent';
 
 /**
  * Left column for the Prompts & Tasks page — scrollable panel containing
@@ -19,11 +20,11 @@ const PromptsPanel = (): React.JSX.Element => {
         </p>
       </header>
 
-      <FormSection title="Prompt Files">
+      <FormSection sectionId="prompt-files" title="Prompt Files" helpContent={HELP_CONTENT['prompt-files']}>
         <PromptFilesForm />
       </FormSection>
 
-      <FormSection title="VS Code Tasks">
+      <FormSection sectionId="vscode-tasks" title="VS Code Tasks" helpContent={HELP_CONTENT['vscode-tasks']}>
         <VsCodeTasksForm />
       </FormSection>
     </div>

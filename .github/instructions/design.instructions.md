@@ -14,6 +14,9 @@ applyTo: "**"
 - Users can copy any individual output file to the clipboard, or download all files as a `.zip` archive preserving the correct subfolder structure
 - Company preferences persist across sessions via `atomWithStorage` (localStorage)
 - Project settings are session-only (standard Jotai atoms, reset on refresh)
+- All form sections on all pages are **collapsible** — the header is always visible; the body collapses/expands on click. Collapsed state persists to localStorage so the layout is restored on refresh
+- Each section header has an optional **help (ⓘ) button** that opens a lightweight modal explaining what information that section expects
+- A **"New Project"** button at the top of the Project page resets all project-specific atoms to their defaults and collapses all sections (except Project Info, which returns to its default expanded state)
 
 ## Form Sections
 
@@ -48,6 +51,45 @@ Reusable prompt files and VS Code task definitions likely to be consistent acros
 |---|---|
 | **Prompt Files** | List of `.github/prompts/*.prompt.md` entries: toggle enabled, edit label, description, agent mode (`agent` \| `ask` \| `edit`), and full body content |
 | **VS Code Tasks** | List of `.vscode/tasks.json` task entries: label, shell command, group, and problem matcher |
+
+## Collapsible Sections & Section Help
+
+### Collapsible Sections
+
+Every `<FormSection>` across all three pages is collapsible:
+- The section header (title + control buttons) is always visible
+- Clicking the chevron button (or anywhere on the header row) toggles the body
+- **Project Info** starts expanded by default; all other sections start collapsed
+- Expanded/collapsed state is persisted to localStorage via `sectionExpandedAtom`
+
+### Section Help Modal
+
+Each section optionally receives a `helpContent` prop (`{ title: string; body: string }`).
+When provided, an **ⓘ** button appears in the header. Clicking it sets `helpModalAtom` to the content object, and a global `<HelpModal>` overlay renders the title and body with a **Got it** / close button. There is no multi-step navigation — each help modal shows only the content for that one section.
+
+### New Project Button
+
+A **"New Project"** button sits at the top of the Project page (where the old Start Walkthrough button was). Clicking it:
+1. Resets all session-only project atoms (`projectInfoAtom`, `techStackAtom`, `vsCodeSettingsAtom`, `architectureAtom`, `persistenceAtom`, `aiIntegrationAtom`, `environmentAtom`) to their exported default constants
+2. Resets `sectionExpandedAtom` to `defaultSectionExpanded` (Project Info expanded, all others collapsed)
+
+Company-preference atoms (`folderStructureAtom`, `codeConventionsAtom`, `typeScriptAtom`, `reactComponentsAtom`, `stateManagementAtom`, `scopedFilesAtom`, `promptFilesAtom`, `vsCodeTasksAtom`) are **not** touched.
+
+### State Atoms
+
+```ts
+// Persisted — map of sectionId → expanded boolean
+export const defaultSectionExpanded: Record<string, boolean> = { 'project-info': true, /* all others false */ };
+export const sectionExpandedAtom = atomWithStorage<Record<string, boolean>>('pref:sectionExpanded', defaultSectionExpanded);
+
+// Session-only — content to display in the help modal (null = closed)
+export interface HelpModalContent { title: string; body: string; }
+export const helpModalAtom = atom<HelpModalContent | null>(null);
+```
+
+Help text for each section is defined in `src/features/tutorial/helpContent.ts` as `HELP_CONTENT: Record<string, HelpModalContent>` and passed as a `helpContent` prop to each `<FormSection>` in the relevant panel component.
+
+---
 
 ## Atom Shapes
 
@@ -149,7 +191,10 @@ export const outputAtom = atom((get) => ({
   <JotaiProvider>
     <Nav />                        ← shared navigation between / and /preferences
 
+    <HelpModal />               ← global overlay; reads helpModalAtom; null = hidden
+
     <DashboardPage>              ← src/app/page.tsx (default export)
+      <NewProjectButton />        ← resets project atoms + sectionExpandedAtom to defaults
       <FormPanel>                ← left column, scrollable
         <FormSection title="...">  ← reusable section wrapper with heading
           <ProjectInfoForm />
@@ -212,5 +257,11 @@ export const outputAtom = atom((get) => ({
 - Download produces a `.zip` archive containing all generated files in their correct folder structure (e.g. `.github/instructions/`, `.vscode/`) — use the `fflate` library (`npm install fflate`) for zip generation; `<DownloadAllButton>` triggers this via a client-side Blob + `<a download>` link
 - All form inputs are controlled via Jotai atoms — no local `useState` for form values
 - `<Nav>` lives in `src/components/Nav.tsx` as it is shared across all pages
+- `<FormSection>` accepts `sectionId: string`, `title: string`, `helpContent?: HelpModalContent`, and `children` — it reads/writes `sectionExpandedAtom[sectionId]` for collapse state and calls `setHelpModal(helpContent)` on ⓘ click
+- `<HelpModal>` lives in `src/features/tutorial/components/HelpModal.tsx` and is rendered inside `<JotaiProvider>` in the root layout; it conditionally renders based on `helpModalAtom !== null`
+- Help text for each section is defined in `src/features/tutorial/helpContent.ts` as `HELP_CONTENT: Record<string, HelpModalContent>` and imported by the panel components (`FormPanel`, `PreferencesPanel`, `PromptsPanel`)
+- `<NewProjectButton>` lives in `src/features/form/components/NewProjectButton.tsx`; it resets all session-only project atoms to their exported default constants and resets `sectionExpandedAtom` to `defaultSectionExpanded`
+- Default values for all resettable project atoms must be exported as named constants from `src/lib/atoms.ts` (e.g. `defaultProjectInfo`, `defaultTechStack`) so `NewProjectButton` can reference them
+- The help modal is implemented with a Tailwind-styled overlay (fixed, inset-0, z-50 backdrop) — no third-party modal library
 - **"TBD at init" convention**: when a project-specific text field (project name, description, overview, architecture details, bootstrap steps) is left blank, `generateContext.ts` emits the literal string `TBD at init` in the generated output instead of omitting the section. Company preference fields (TypeScript, React components, state management, folder structure) always emit their configured or default values and are never replaced with `TBD at init`.
 - The `/init` prompt (`.github/prompts/init.prompt.md`) is intended to be run in the **target project** after the generated files have been downloaded and copied there. It scans `.github/` instruction files and `copilot-instructions.md` for `TBD at init` markers, infers values from the project overview and any already-populated fields, asks the user targeted questions about the architecture and bootstrap sequence, then edits each file to replace every placeholder.

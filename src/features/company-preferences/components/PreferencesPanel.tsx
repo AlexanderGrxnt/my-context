@@ -8,6 +8,7 @@ import { TypeScriptForm } from './sections/TypeScriptForm';
 import { ReactComponentsForm } from './sections/ReactComponentsForm';
 import { StateManagementForm } from './sections/StateManagementForm';
 import { ScopedFilesForm } from './sections/ScopedFilesForm';
+import { HELP_CONTENT } from '@/features/tutorial/helpContent';
 
 /**
  * Left column for the Preferences page — scrollable panel containing all
@@ -23,27 +24,27 @@ const PreferencesPanel = (): React.JSX.Element => {
         </p>
       </header>
 
-      <FormSection title="Folder Structure">
+      <FormSection sectionId="folder-structure" title="Folder Structure" helpContent={HELP_CONTENT['folder-structure']}>
         <FolderStructureForm />
       </FormSection>
 
-      <FormSection title="Code Conventions">
+      <FormSection sectionId="code-conventions" title="Code Conventions" helpContent={HELP_CONTENT['code-conventions']}>
         <CodeConventionsForm />
       </FormSection>
 
-      <FormSection title="TypeScript">
+      <FormSection sectionId="typescript" title="TypeScript" helpContent={HELP_CONTENT['typescript']}>
         <TypeScriptForm />
       </FormSection>
 
-      <FormSection title="React Components">
+      <FormSection sectionId="react-components" title="React Components" helpContent={HELP_CONTENT['react-components']}>
         <ReactComponentsForm />
       </FormSection>
 
-      <FormSection title="State Management">
+      <FormSection sectionId="state-management" title="State Management" helpContent={HELP_CONTENT['state-management']}>
         <StateManagementForm />
       </FormSection>
 
-      <FormSection title="Scoped Instruction Files">
+      <FormSection sectionId="scoped-files" title="Scoped Instruction Files" helpContent={HELP_CONTENT['scoped-files']}>
         <ScopedFilesForm />
       </FormSection>
     </div>
