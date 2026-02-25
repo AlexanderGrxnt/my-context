@@ -3,7 +3,7 @@ agent: agent
 description: Update instruction files to reflect agreed conventions — no source code changes
 ---
 
-Analyse the described convention change and update the relevant instruction files in `.github/instructions/`. Do not modify any source code, tests, or configuration files.
+Analyse the described convention change and update the relevant instruction files in `.github/instructions/`. Do not modify any source code, tests, or configuration files. Ask clarifying questions to the user if the change is not specific enough to determine which instruction file(s) to edit or how to word the new rule. Only update the specific rule(s) that need changing — preserve all unrelated content in the instruction files. If the same rule is referenced in multiple files (e.g. both `components.instructions.md` and `copilot-instructions.md`), update all occurrences for consistency.
 
 ## Session Log
 
@@ -44,10 +44,12 @@ When done, report:
 
 ## Branch Guidance
 
-If the planning session describes a **new feature** (not just a convention tweak), remind the user to create a feature branch before any implementation begins:
+If the planning session describes a **new feature** (not just a convention tweak), create a feature branch automatically after updating the instruction files. Use the `run_in_terminal` tool to run:
 
 ```bash
 git checkout -b feat/<short-description>
 ```
+
+Derive `<short-description>` from the feature name — lowercase, hyphen-separated, concise (2–4 words). Do not ask the user to do this manually. Confirm the branch name in the output report.
 
 Implementation work should never happen directly on `main`.

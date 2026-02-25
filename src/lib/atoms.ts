@@ -167,15 +167,17 @@ const DEFAULT_WORKING_WITH_CODEBASE = [
   'The intent for any given task comes from the chat message. If the codebase already exists, use the workspace directly rather than relying on any file inventory. If starting from scratch, follow the bootstrap sequence in this file.',
 ].join('\n');
 
-export const projectInfoAtom = atom<ProjectInfoState>({
+export const defaultProjectInfo: ProjectInfoState = {
   name: '',
   description: '',
   overview: '',
   workingWithCodebase: DEFAULT_WORKING_WITH_CODEBASE,
   bootstrapSteps: '',
-});
+};
 
-export const techStackAtom = atom<TechStackState>({
+export const projectInfoAtom = atom<ProjectInfoState>(defaultProjectInfo);
+
+export const defaultTechStack: TechStackState = {
   framework: 'Next.js 15 (App Router)',
   language: 'TypeScript',
   styling: 'Tailwind CSS v4',
@@ -183,7 +185,9 @@ export const techStackAtom = atom<TechStackState>({
   testing: 'Jest + React Testing Library',
   runtime: 'Node.js',
   testingNotes: '',
-});
+};
+
+export const techStackAtom = atom<TechStackState>(defaultTechStack);
 
 export const folderStructureAtom = atomWithStorage<FolderStructureState>('pref:folderStructure', {
   folders: ['app', 'components', 'lib', 'providers', 'types', 'utils'],
@@ -227,7 +231,7 @@ export const defaultScopedFiles: ScopedFileConfig[] = [
 
 export const scopedFilesAtom = atomWithStorage<ScopedFileConfig[]>('pref:scopedFiles:v2', defaultScopedFiles);
 
-export const vsCodeSettingsAtom = atom<VsCodeSettingsState>({
+export const defaultVsCodeSettings: VsCodeSettingsState = {
   codeGeneration: '',
   testGeneration:
     'Use Jest and React Testing Library. Co-locate test files as *.test.ts or *.test.tsx next to the file under test.',
@@ -235,32 +239,42 @@ export const vsCodeSettingsAtom = atom<VsCodeSettingsState>({
     'Flag any use of `any`, non-null assertions, inline styles, or atoms defined outside src/lib/atoms.ts.',
   commitMessages:
     'Use conventional commits format: type(scope): description. Types: feat, fix, chore, refactor, docs, style, test.',
-});
+};
+
+export const vsCodeSettingsAtom = atom<VsCodeSettingsState>(defaultVsCodeSettings);
 
 // Project-specific atoms (session-only — reset on page refresh)
 
-export const architectureAtom = atom<ArchitectureState>({
+export const defaultArchitecture: ArchitectureState = {
   routes: [],
   domainTypes: [],
   componentHierarchy: '',
-});
+};
 
-export const persistenceAtom = atom<PersistenceState>({
+export const architectureAtom = atom<ArchitectureState>(defaultArchitecture);
+
+export const defaultPersistence: PersistenceState = {
   strategy: '',
   tool: '',
   notes: '',
-});
+};
 
-export const aiIntegrationAtom = atom<AiIntegrationState>({
+export const persistenceAtom = atom<PersistenceState>(defaultPersistence);
+
+export const defaultAiIntegration: AiIntegrationState = {
   provider: '',
   sdk: '',
   approach: '',
   notes: '',
-});
+};
 
-export const environmentAtom = atom<EnvironmentState>({
+export const aiIntegrationAtom = atom<AiIntegrationState>(defaultAiIntegration);
+
+export const defaultEnvironment: EnvironmentState = {
   vars: [],
-});
+};
+
+export const environmentAtom = atom<EnvironmentState>(defaultEnvironment);
 
 // ---------------------------------------------------------------------------
 // Prompt files & VS Code tasks — persisted to localStorage
@@ -496,6 +510,47 @@ export const defaultVsCodeTasks: VsCodeTasksState = {
 };
 
 export const vsCodeTasksAtom = atomWithStorage<VsCodeTasksState>('pref:vsCodeTasks', defaultVsCodeTasks);
+
+// ---------------------------------------------------------------------------
+// Section collapse state — persisted to localStorage
+// ---------------------------------------------------------------------------
+
+/** Default expanded state: only Project Info is open; all other sections start collapsed. */
+export const defaultSectionExpanded: Record<string, boolean> = {
+  'project-info': true,
+  'tech-stack': false,
+  'architecture': false,
+  'persistence': false,
+  'ai-integration': false,
+  'environment': false,
+  'working-with-codebase': false,
+  'vscode-settings': false,
+  'folder-structure': false,
+  'code-conventions': false,
+  'typescript': false,
+  'react-components': false,
+  'state-management': false,
+  'scoped-files': false,
+  'prompt-files': false,
+  'vscode-tasks': false,
+};
+
+export const sectionExpandedAtom = atomWithStorage<Record<string, boolean>>(
+  'pref:sectionExpanded',
+  defaultSectionExpanded,
+);
+
+// ---------------------------------------------------------------------------
+// Help modal state — session only
+// ---------------------------------------------------------------------------
+
+export interface HelpModalContent {
+  title: string;
+  body: string;
+}
+
+/** Set to display the help modal for a section; null when closed. */
+export const helpModalAtom = atom<HelpModalContent | null>(null);
 
 // ---------------------------------------------------------------------------
 // Derived output atom

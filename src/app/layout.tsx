@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { JotaiProvider } from '@/providers/JotaiProvider';
 import { Nav } from '@/components/Nav';
+import { HelpModal } from '@/features/tutorial';
 import './globals.css';
 
 const geistSans = Geist({
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <JotaiProvider>
           <Nav />
+          <HelpModal />
           {children}
         </JotaiProvider>
       </body>

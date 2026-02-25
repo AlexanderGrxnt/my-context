@@ -10,6 +10,7 @@ import { AiIntegrationForm } from './sections/AiIntegrationForm';
 import { EnvironmentForm } from './sections/EnvironmentForm';
 import { WorkingWithCodebaseForm } from './sections/WorkingWithCodebaseForm';
 import { VsCodeSettingsForm } from './sections/VsCodeSettingsForm';
+import { HELP_CONTENT } from '@/features/tutorial/helpContent';
 
 /**
  * Left column — scrollable form panel containing all input sections.
@@ -24,35 +25,35 @@ const FormPanel = (): React.JSX.Element => {
         </p>
       </header>
 
-      <FormSection title="Project Info">
+      <FormSection sectionId="project-info" title="Project Info" helpContent={HELP_CONTENT['project-info']}>
         <ProjectInfoForm />
       </FormSection>
 
-      <FormSection title="Tech Stack">
+      <FormSection sectionId="tech-stack" title="Tech Stack" helpContent={HELP_CONTENT['tech-stack']}>
         <TechStackForm />
       </FormSection>
 
-      <FormSection title="Architecture">
+      <FormSection sectionId="architecture" title="Architecture" helpContent={HELP_CONTENT['architecture']}>
         <ArchitectureForm />
       </FormSection>
 
-      <FormSection title="Persistence">
+      <FormSection sectionId="persistence" title="Persistence" helpContent={HELP_CONTENT['persistence']}>
         <PersistenceForm />
       </FormSection>
 
-      <FormSection title="AI Integration">
+      <FormSection sectionId="ai-integration" title="AI Integration" helpContent={HELP_CONTENT['ai-integration']}>
         <AiIntegrationForm />
       </FormSection>
 
-      <FormSection title="Environment Variables">
+      <FormSection sectionId="environment" title="Environment Variables" helpContent={HELP_CONTENT['environment']}>
         <EnvironmentForm />
       </FormSection>
 
-      <FormSection title="Working with This Codebase">
+      <FormSection sectionId="working-with-codebase" title="Working with This Codebase" helpContent={HELP_CONTENT['working-with-codebase']}>
         <WorkingWithCodebaseForm />
       </FormSection>
 
-      <FormSection title="VS Code Settings">
+      <FormSection sectionId="vscode-settings" title="VS Code Settings" helpContent={HELP_CONTENT['vscode-settings']}>
         <VsCodeSettingsForm />
       </FormSection>
     </div>
